@@ -174,6 +174,42 @@ endpoint IPs, CIDRs, and MAC addresses.
    graduates from beta. This work is tracked in :gh-issue:`17694`.
 
 
+BIG-IP Tunnel Setup for Cilium VTEP Integration
+===============================================
+
+.. note::
+
+   BIG-IP VXLAN tunnel setup is identical to BIG-IP flannel VXLAN deployment, we even use the 
+   same tunnel name flannel_vxlan in CIS  ``--flannel-name="flannel_vxlan"`` so that it does not
+   require any CIS code changes to make Cilium VXLAN/Geneve tunnel  work with BIG-IP VXLAN/Geneve
+   tunnel. there are three differences though:
+
+   * the tunnel profile flooding type is set to ``multipoint``
+      multipoint is to make BIG-IP to send ARP broadcast request to Cilium managed nodes for pod ARP resolution.
+   * the tunnel VNI key is set to ``2``
+      VNI 2 is reserved identity ID in Cilium representing world traffic 
+   * BIG-IP requires static route setup to Cilium managed pod CIDR network
+      BIG-IP tunnel subnet should not be within pod CIDR network, it may cause conflicts if a node podCIDR overlap with 
+      BIG-IP tunnel subnet 
+
+.. code-block:: bash
+
+   #. Create a VXLAN tunnel profile. The tunnel profile name is fl-vxlan, 
+   tmsh create net tunnels vxlan fl-vxlan port 8472 flooding-type multipoint 
+
+   #. Create a VXLAN tunnel, the tunnel name is ``flannel_vxlan`` 
+   tmsh create net tunnels tunnel flannel_vxlan key 2 profile fl-vxlan local-address 10.169.72.34
+
+   #. Create VXLAN tunnel self IP, allow default service, allow none stops self ip ping from working
+   tmsh create net self 10.1.6.34 address 10.1.6.34/255.255.255.0 allow-service default vlan flannel_vxlan
+
+   #. Create a static route to Cilium managed pod CIDR network ``10.0.0.0/16`` through tunnel interface ``flannel_vxlan``
+   tmsh create net route 10.0.0.0 network 10.0.0.0/16 interface flannel_vxlan
+
+   #. Save sys config
+   tmsh save sys config
+
+
 Enable VXLAN Tunnel Endpoint (VTEP) integration
 ===============================================
 
