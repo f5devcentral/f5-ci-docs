@@ -21,18 +21,18 @@ Overview of Cluster Networking with Cilium in Kubernetes
                          +---+--------+                                          
                              |                                                   
                              |                                                   
-                   +--------VIP---------------+                                  
-                   |                          |                                  
-                   |     BIG-IP               |                                  
-  vtepCIDR:        |                          |                                  
-   10.1.6.0/24     |                          |                                  
-                   |  VtepMAC                 |                                  
-                   |  VNI:2         selfip    |                                  
-                   +-flannel_vxlan----vlan----+                                  
-                  10.1.6.34            |  10.169.72.34                           
-                                       |                                         
-                                       |                                         
-  podCIDR:               +---------------+-----+     podCIDR:                      
+               +--------VIP---------------+     +----------------------------+
+               |                          |     |                            |
+               |     BIG-IP-1             |     |  BIG-IP-2  vtepCIDR:       |
+  vtepCIDR:    |                          |     |             10.1.5.0/24    |
+   10.1.6.0/24 |                          |     |                            |
+               |  VtepMAC  selfip         |     |selfip          VtepMAC     |
+               |  VNI:2      10.169.72.34 |     | 10.169.72.36   VNI:2       |
+               +-flannel_vxlan-VLAN-------+     +--VLAN-----flannel_vxlan----+
+               10.1.6.34        |                    |      10.1.5.36         
+                                +---+    +-----------+                    
+                                    |    |                                
+  podCIDR:               +----------+----+-----+     podCIDR:                      
    10.0.0.0/24           |                     |        10.0.1.0/24                
   cilium_host:           |                     |     cilium_host:                  
    10.0.0.228            |                     |        10.0.1.116                 
@@ -210,12 +210,10 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    tmsh save sys config
 
 
-Enable VXLAN Tunnel Endpoint (VTEP) integration
-===============================================
+Enable Cilium VXLAN Tunnel Endpoint (VTEP) integration
+======================================================
 
-This feature requires a Linux ``5.2`` kernel or later, and is disabled by default. When enabling the
-VTEP integration, you must also specify the IPs, CIDR ranges and MACs for each VTEP device
-as part of the configuration.
+This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supported also) or later, and is disabled by default. When enabling the VTEP integration, you must also specify the IPs, CIDR ranges and MACs for each VTEP device as part of the configuration.
 
 .. tabs::
 
@@ -230,9 +228,9 @@ as part of the configuration.
               --namespace kube-system \
               --reuse-values \
               --set vtep.enabled="true" \
-              --set vtep.endpoint="endpoint-1-IP endpoint-2-IP" \
-              --set vtep.cidr="endpoint-1-CIDR   endpoint-2-CIDR" \
-              --set vtep.mac="endpoint-1-MAC     endpoint-2-MAC" \
+              --set vtep.endpoint="BIG-IP-1-SELFIP BIG-IP-2-SELFIP" \
+              --set vtep.cidr="BIG-IP-1-CIDR       BIG-IP-2-CIDR" \
+              --set vtep.mac="BIG-IP-1-VTEPMAC     BIG-IP-2-VTEPMAC" \
               --set policyEnforcementMode="never"
 
     .. group-tab:: ConfigMap
@@ -243,9 +241,9 @@ as part of the configuration.
        .. code-block:: yaml
 
           enable-vtep:   "true"
-          vtep-endpoint: "endpoint-1-IP    endpoint-2-IP"
-          vtep-cidr:     "endpoint-1-CIDR  endpoint-2-CIDR"
-          vtep-mac:      "endpoint-1-MAC   endpoint-2-MAC"
+          vtep-endpoint: "BIG-IP-1-SELFIP      BIG-IP-2-SELFIP"
+          vtep-cidr:     "BIG-IP-1-CIDR        BIG-IP-2-CIDR"
+          vtep-mac:      "BIG-IP-1-VTEPMAC     BIG-IP-2-VTEPMAC"
           enable-policy: "never"
 
        Restart Cilium daemonset:
