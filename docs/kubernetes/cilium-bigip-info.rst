@@ -3,6 +3,21 @@
 
 .. _cilium-bigip-info:
 
+Why BIG-IP and Cilium VXLAN/Geneve Integration
+==============================================
+
+Cilium CNI plugin address many problems that the old Flannel CNI plugin facing
+two main shortcomings below.
+
+   * K8S Flannel CNI plugin does not support BIG-IP HA deployment
+   * K8S Flannel CNI plugin does not support dynamic pod ARP with BIG-IP
+
+Cilium also address the kubernetes network scale problem with revolution kernel BPF technology:
+
+see Liberating Kubernetes From Kube-proxy and Iptables, Youtube_.
+
+.. _Youtbube: https://youtu.be/bIRwSIwNHC0
+
 BIG-IP and Cilium VXLAN/Geneve Integration
 ==========================================
 
