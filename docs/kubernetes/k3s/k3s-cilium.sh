@@ -92,10 +92,6 @@ echo "===================================="
 echo -e "${RED}STEP 2 - deploy cilium${NC}"
 echo "===================================="
 
-kubectl delete -f cilium-bigip-$nodeip.yaml
-
-sleep 5
-
 kubectl apply -f cilium-bigip-$nodeip.yaml
 
 ok=0
@@ -142,8 +138,37 @@ echo "===================================="
 echo -e "${RED}STEP 3 - deploy CIS${NC}"
 echo "===================================="
 
+# username="USER INPUT"
+read -p "Enter BIG-IP username: " username
+
+unset password
+unset chartCount
+
+echo -n "Enter password: "
+
+while IFS= read -r -n1 -s char; do
+    case "$char" in
+    $'\0')
+        break
+        ;;
+    $'\177')
+        if [ ${#password} -gt 0 ]; then
+            echo -ne "\b \b"
+            password=${password::-1}
+        fi
+        ;;
+    *)
+        chartCount=$((chartCount+1))
+        echo -n '*'
+        password+="$char"
+        ;;
+    esac
+done
+
+sed "s/SELFIP/$selfip/; s/PASSWORD/$password/; s/USERNAME/$username/;" cis.yaml > cis-$selfip.yaml
+
 kubectl apply -f rbac.yaml
-kubectl apply -f cis.yaml
+kubectl apply -f cis-$selfip.yaml
 kubectl apply -f f5-hello-world-deployment.yaml
 kubectl apply -f f5-hello-world-service.yaml
 
