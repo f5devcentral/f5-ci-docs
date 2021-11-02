@@ -41,11 +41,11 @@ spec:
         - --bigip-partition
         - k8s
         - --bigip-url
-        - 10.169.72.34
+        - SELFIP
         - --bigip-username
-        - admin
+        - USERNAME
         - --bigip-password
-        - admin
+        - PASSWORD
         - --verify-interval
         - "30"
         - --node-poll-interval

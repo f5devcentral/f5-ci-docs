@@ -24,7 +24,7 @@ data:
                     "iningress": {
                         "class": "Service_HTTP",
                         "virtualAddresses": [
-                            "10.169.72.101"
+                            "10.169.72.166"
                         ],
                         "remark":"ingress: f5demo",
                         "virtualPort": 80,
