@@ -137,6 +137,7 @@ When Cilium VTEP integration feature is enabled, Cilium stores BIG-IP tunnel sub
    ----------------------------
    IP PREFIX/ADDRESS   IDENTITY
    ----------------------------
+   10.1.5.0/24         identity=2 encryptkey=0 tunnelendpoint=10.169.72.36 vtepmac=01:50:56:A0:7D:D8
    10.1.6.0/24         identity=2 encryptkey=0 tunnelendpoint=10.169.72.34 vtepmac=01:50:56:A0:7D:D8
    10.0.0.130/32       identity=3 encryptkey=0 tunnelendpoint=0.0.0.0 vtepmac=00:00:00:00:00:00
    0.0.0.0/0           identity=2 encryptkey=0 tunnelendpoint=0.0.0.0 vtepmac=00:00:00:00:00:00
@@ -228,9 +229,9 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
               --namespace kube-system \
               --reuse-values \
               --set vtep.enabled="true" \
-              --set vtep.endpoint="BIG-IP-1-SELFIP BIG-IP-2-SELFIP" \
-              --set vtep.cidr="BIG-IP-1-CIDR       BIG-IP-2-CIDR" \
-              --set vtep.mac="BIG-IP-1-VTEPMAC     BIG-IP-2-VTEPMAC" \
+              --set vtep.endpoint="10.169.72.34    10.169.72.36" \
+              --set vtep.cidr="10.1.6.0/24         10.1.5.0/24" \
+              --set vtep.mac="01:50:56:A0:7D:D8    00:50:56:86:6b:28" \
               --set policyEnforcementMode="never"
 
     .. group-tab:: ConfigMap
@@ -241,9 +242,9 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
        .. code-block:: yaml
 
           enable-vtep:   "true"
-          vtep-endpoint: "BIG-IP-1-SELFIP      BIG-IP-2-SELFIP"
-          vtep-cidr:     "BIG-IP-1-CIDR        BIG-IP-2-CIDR"
-          vtep-mac:      "BIG-IP-1-VTEPMAC     BIG-IP-2-VTEPMAC"
+          vtep-endpoint: "10.169.72.34        10.169.72.36"
+          vtep-cidr:     "10.1.6.0/24         10.1.5.0/24"
+          vtep-mac:      "01:50:56:A0:7D:D8   00:50:56:86:6b:28"
           enable-policy: "never"
 
        Restart Cilium daemonset:
