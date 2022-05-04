@@ -213,7 +213,7 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    #. Create a VXLAN tunnel profile. The tunnel profile name is fl-vxlan, 
    tmsh create net tunnels vxlan fl-vxlan port 8472 flooding-type multipoint 
 
-   #. Create a VXLAN tunnel, the tunnel name is ``flannel_vxlan`` 
+   #. Create a VXLAN tunnel, the tunnel name is ``flannel_vxlan``, in CIS use ``--openshift-sdn-name`` argument
    tmsh create net tunnels tunnel flannel_vxlan key 2 profile fl-vxlan local-address 10.169.72.34
 
    #. Create VXLAN tunnel self IP, allow default service, allow none stops self ip ping from working
