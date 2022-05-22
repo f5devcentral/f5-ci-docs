@@ -76,8 +76,6 @@ Overview of Cluster Networking with Cilium in Kubernetes
 
    Read about the Kubernetes `Cluster Network`_ and `Using Cilium with Kubernetes`_.
 
-`Cilium`_ is an open source software for providing, securing and observing network connectivity between container workloads - cloud native, and fueled by the revolutionary Kernel technology eBPF. 
-
 Cilium assigns a subnet or get pod subnet from Kubernetes for each Kubernetes Node. It allocates an IP address within that subnet to each Pod running on the Node. Because :code:`cilium` runs on every Node, all of the Pods across the Cluster can talk to each other directly.
 
 .. note::
@@ -188,7 +186,7 @@ endpoint IPs, CIDRs, and MAC addresses.
 
 .. warning::
 
-   This feature is in beta, and is currently incompatible with network policy.
+   This feature is in beta, and is currently incompatible with Cilium L7 policy.
    The instructions below will specify to disable network policy in order to enable
    the feature for getting started. This restriction will be lifted when the feature
    graduates from beta. This work is tracked in :gh-issue:`17694`.
