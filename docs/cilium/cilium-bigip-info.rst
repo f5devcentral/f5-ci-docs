@@ -247,6 +247,7 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
               --set vtep.endpoint="10.169.72.34    10.169.72.36" \
               --set vtep.cidr="10.1.6.0/24         10.1.5.0/24" \
               --set vtep.mac="01:50:56:A0:7D:D8    00:50:56:86:6b:28" \
+              --set vtep.mask="255.255.255.0"
 
     .. group-tab:: ConfigMap
 
@@ -259,6 +260,7 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
           vtep-endpoint: "10.169.72.34        10.169.72.36"
           vtep-cidr:     "10.1.6.0/24         10.1.5.0/24"
           vtep-mac:      "01:50:56:A0:7D:D8   00:50:56:86:6b:28"
+          vtep-mask:     "255.255.255.0"
 
        Restart Cilium daemonset:
 
