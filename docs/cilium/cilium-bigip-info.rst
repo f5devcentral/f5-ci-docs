@@ -6,11 +6,15 @@
 Why BIG-IP and Cilium VXLAN/Geneve Integration
 ==============================================
 
-Cilium CNI plugin address many problems that the old Flannel CNI plugin facing
-two main shortcomings below.
+There are various Container Network Interfaces (CNI) in the market for Kubernetes cluster. Cilium is an open-source software for providing, securing and observing network connectivity between container workloads - cloud native, and fueled by the revolutionary Kernel technology eBPF. But our BIGIP could not work with it because Cilium does not support VXLAN tunnels to VTEP device. 
 
-   * K8S Flannel CNI plugin does not support BIG-IP HA deployment
-   * K8S Flannel CNI plugin does not support dynamic pod ARP with BIG-IP
+Cilium CNI plugin address problems that other CNI facing
+
+     * Flannel CNI plugin does not support dynamic pod ARP with BIG-IP
+     * Calico CNI tunnel mode is not supported by BIG-IP
+     * Both Flannel and Calico are iptables based dataplane with iptables limitation
+     * Openshift SDN are OVS based, Geneve tunnel not supported by BIG-IP, no eBPF
+   
 
 Cilium also address the kubernetes network scale problem with revolution kernel BPF technology:
 
