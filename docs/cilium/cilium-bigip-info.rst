@@ -1,6 +1,93 @@
 :product: BIG-IP Controller for Kubernetes
 :type: concept
 
+BIG-IP Tunnel Setup for Cilium VTEP Integration
+===============================================
+
+.. note::
+
+   BIG-IP VXLAN tunnel setup is identical to BIG-IP flannel VXLAN deployment, we even use the 
+   same tunnel name flannel_vxlan in CIS  ``--flannel-name="flannel_vxlan"`` so that it does not
+   require any CIS code changes to make Cilium VXLAN/Geneve tunnel  work with BIG-IP VXLAN/Geneve
+   tunnel. there are three differences though:
+
+   * the tunnel profile flooding type is set to ``multipoint``
+      multipoint is to make BIG-IP to send ARP broadcast request to Cilium managed nodes for pod ARP resolution.
+   * the tunnel VNI key is set to ``2``
+      VNI 2 is reserved identity ID in Cilium representing world traffic 
+   * BIG-IP requires static route setup to Cilium managed pod CIDR network
+      BIG-IP tunnel subnet should not be within pod CIDR network, it may cause conflicts if a node podCIDR overlap with 
+      BIG-IP tunnel subnet 
+
+.. code-block:: bash
+
+   #. Create a VXLAN tunnel profile. The tunnel profile name is fl-vxlan, 
+   tmsh create net tunnels vxlan fl-vxlan port 8472 flooding-type multipoint 
+
+   #. Create a VXLAN tunnel, the tunnel name is ``flannel_vxlan``, in CIS use ``--openshift-sdn-name`` argument
+   tmsh create net tunnels tunnel flannel_vxlan key 2 profile fl-vxlan local-address 10.169.72.34
+
+   #. Create VXLAN tunnel self IP, allow default service, allow none stops self ip ping from working
+   tmsh create net self 10.1.6.34 address 10.1.6.34/255.255.255.0 allow-service default vlan flannel_vxlan
+
+   #. Create a static route to Cilium managed pod CIDR network ``10.0.0.0/16`` through tunnel interface ``flannel_vxlan``
+   tmsh create net route 10.0.0.0 network 10.0.0.0/16 interface flannel_vxlan
+
+   #. Save sys config
+   tmsh save sys config
+
+
+Enable Cilium VXLAN Tunnel Endpoint (VTEP) integration
+======================================================
+
+This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supported also) or later, and is disabled by default. When enabling the VTEP integration, you must also specify the IPs, CIDR ranges and MACs for each VTEP device as part of the configuration.
+
+.. tabs::
+
+    .. group-tab:: Helm
+
+        If you installed Cilium via ``helm install``, you may enable
+        the VTEP support with the following command:
+
+        .. parsed-literal::
+
+           helm upgrade cilium |CHART_RELEASE| \
+              --namespace kube-system \
+              --reuse-values \
+              --set vtep.enabled="true" \
+              --set vtep.endpoint="10.169.72.34    10.169.72.36" \
+              --set vtep.cidr="10.1.6.0/24         10.1.5.0/24" \
+              --set vtep.mac="01:50:56:A0:7D:D8    00:50:56:86:6b:28" \
+              --set vtep.mask="255.255.255.0"
+
+    .. group-tab:: ConfigMap
+
+       VTEP support can be enabled by setting the
+       following options in the ``cilium-config`` ConfigMap:
+
+       .. code-block:: yaml
+
+          enable-vtep:   "true"
+          vtep-endpoint: "10.169.72.34        10.169.72.36"
+          vtep-cidr:     "10.1.6.0/24         10.1.5.0/24"
+          vtep-mac:      "01:50:56:A0:7D:D8   00:50:56:86:6b:28"
+          vtep-mask:     "255.255.255.0"
+
+       Restart Cilium daemonset:
+
+       .. code-block:: bash
+
+          kubectl -n $CILIUM_NAMESPACE rollout restart ds/cilium
+
+    .. group-tab:: Cilium CLI
+
+       VTEP support can be enabled when install Cilium with Cilium CLI
+
+       .. code-block:: bash
+
+          cilium install --version=v1.12.0-rc2 --kube-proxy-replacement strict --helm-set-string=k8sServiceHost=10.169.72.9,k8sServicePort=6443,l7Proxy=false,vtep.enabled=true,vtep.endpoint="10.169.72.34 10.169.72.36",vtep.cidr="10.1.6.0/24 10.1.5.0/24",vtep.mac="52:54:00:3e:3f:c1 52:54:00:4e:01:a6",vtep.mask="255.255.255.0"
+          
+
 .. _cilium-bigip-info:
 
 Why BIG-IP and Cilium VXLAN/Geneve Integration
@@ -192,88 +279,4 @@ endpoint IPs, CIDRs, and MAC addresses.
    graduates from beta. This work is tracked in :gh-issue:`17694`.
 
 
-BIG-IP Tunnel Setup for Cilium VTEP Integration
-===============================================
 
-.. note::
-
-   BIG-IP VXLAN tunnel setup is identical to BIG-IP flannel VXLAN deployment, we even use the 
-   same tunnel name flannel_vxlan in CIS  ``--flannel-name="flannel_vxlan"`` so that it does not
-   require any CIS code changes to make Cilium VXLAN/Geneve tunnel  work with BIG-IP VXLAN/Geneve
-   tunnel. there are three differences though:
-
-   * the tunnel profile flooding type is set to ``multipoint``
-      multipoint is to make BIG-IP to send ARP broadcast request to Cilium managed nodes for pod ARP resolution.
-   * the tunnel VNI key is set to ``2``
-      VNI 2 is reserved identity ID in Cilium representing world traffic 
-   * BIG-IP requires static route setup to Cilium managed pod CIDR network
-      BIG-IP tunnel subnet should not be within pod CIDR network, it may cause conflicts if a node podCIDR overlap with 
-      BIG-IP tunnel subnet 
-
-.. code-block:: bash
-
-   #. Create a VXLAN tunnel profile. The tunnel profile name is fl-vxlan, 
-   tmsh create net tunnels vxlan fl-vxlan port 8472 flooding-type multipoint 
-
-   #. Create a VXLAN tunnel, the tunnel name is ``flannel_vxlan``, in CIS use ``--openshift-sdn-name`` argument
-   tmsh create net tunnels tunnel flannel_vxlan key 2 profile fl-vxlan local-address 10.169.72.34
-
-   #. Create VXLAN tunnel self IP, allow default service, allow none stops self ip ping from working
-   tmsh create net self 10.1.6.34 address 10.1.6.34/255.255.255.0 allow-service default vlan flannel_vxlan
-
-   #. Create a static route to Cilium managed pod CIDR network ``10.0.0.0/16`` through tunnel interface ``flannel_vxlan``
-   tmsh create net route 10.0.0.0 network 10.0.0.0/16 interface flannel_vxlan
-
-   #. Save sys config
-   tmsh save sys config
-
-
-Enable Cilium VXLAN Tunnel Endpoint (VTEP) integration
-======================================================
-
-This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supported also) or later, and is disabled by default. When enabling the VTEP integration, you must also specify the IPs, CIDR ranges and MACs for each VTEP device as part of the configuration.
-
-.. tabs::
-
-    .. group-tab:: Helm
-
-        If you installed Cilium via ``helm install``, you may enable
-        the VTEP support with the following command:
-
-        .. parsed-literal::
-
-           helm upgrade cilium |CHART_RELEASE| \
-              --namespace kube-system \
-              --reuse-values \
-              --set vtep.enabled="true" \
-              --set vtep.endpoint="10.169.72.34    10.169.72.36" \
-              --set vtep.cidr="10.1.6.0/24         10.1.5.0/24" \
-              --set vtep.mac="01:50:56:A0:7D:D8    00:50:56:86:6b:28" \
-              --set vtep.mask="255.255.255.0"
-
-    .. group-tab:: ConfigMap
-
-       VTEP support can be enabled by setting the
-       following options in the ``cilium-config`` ConfigMap:
-
-       .. code-block:: yaml
-
-          enable-vtep:   "true"
-          vtep-endpoint: "10.169.72.34        10.169.72.36"
-          vtep-cidr:     "10.1.6.0/24         10.1.5.0/24"
-          vtep-mac:      "01:50:56:A0:7D:D8   00:50:56:86:6b:28"
-          vtep-mask:     "255.255.255.0"
-
-       Restart Cilium daemonset:
-
-       .. code-block:: bash
-
-          kubectl -n $CILIUM_NAMESPACE rollout restart ds/cilium
-
-    .. group-tab:: Cilium CLI
-
-       VTEP support can be enabled when install Cilium with Cilium CLI
-
-       .. code-block:: bash
-
-          cilium install --version=v1.12.0-rc2 --kube-proxy-replacement strict --helm-set-string=k8sServiceHost=10.169.72.9,k8sServicePort=6443,l7Proxy=false,vtep.enabled=true,vtep.endpoint="10.169.72.34 10.169.72.36",vtep.cidr="10.1.6.0/24 10.1.5.0/24",vtep.mac="52:54:00:3e:3f:c1 52:54:00:4e:01:a6",vtep.mask="255.255.255.0"
