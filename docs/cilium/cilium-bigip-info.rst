@@ -86,8 +86,20 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
        .. code-block:: bash
 
           cilium install --version=v1.12.0-rc2 --kube-proxy-replacement strict --helm-set-string=k8sServiceHost=10.169.72.9,k8sServicePort=6443,l7Proxy=false,vtep.enabled=true,vtep.endpoint="10.169.72.34 10.169.72.36",vtep.cidr="10.1.6.0/24 10.1.5.0/24",vtep.mac="52:54:00:3e:3f:c1 52:54:00:4e:01:a6",vtep.mask="255.255.255.0"
-          
 
+    .. group-tab:: cilium vtep map list
+
+       When Cilium agent pod is up and running, show the vtep map list
+
+       .. code-block:: bash
+          
+          kubectl -n kube-system -it <cilium agent pod> -- cilium bpf vtep list
+          
+          IP PREFIX/ADDRESS   VTEP
+          10.1.34.0           vtepmac=00:50:56:A0:7D:D8 tunnelendpoint=10.169.72.34    
+          10.1.1.0            vtepmac=82:36:4C:98:2E:56 tunnelendpoint=10.169.72.236   
+       
+       
 .. _cilium-bigip-info:
 
 Why BIG-IP and Cilium VXLAN/Geneve Integration
