@@ -96,8 +96,8 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
           kubectl -n kube-system -it <cilium agent pod> -- cilium bpf vtep list
           
           IP PREFIX/ADDRESS   VTEP
-          10.1.34.0           vtepmac=00:50:56:A0:7D:D8 tunnelendpoint=10.169.72.34    
-          10.1.1.0            vtepmac=82:36:4C:98:2E:56 tunnelendpoint=10.169.72.236   
+          10.1.6.0            vtepmac=00:50:56:A0:7D:D8 tunnelendpoint=10.169.72.34    
+          10.1.5.0            vtepmac=82:36:4C:98:2E:56 tunnelendpoint=10.169.72.26   
        
        
 .. _cilium-bigip-info:
