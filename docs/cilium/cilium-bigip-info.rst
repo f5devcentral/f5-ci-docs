@@ -7,7 +7,7 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
 .. note::
 
    BIG-IP VXLAN tunnel setup is identical to BIG-IP flannel VXLAN deployment, we even use the 
-   same tunnel name flannel_vxlan in CIS  ``--flannel-name="flannel_vxlan"`` so that it does not
+   same tunnel name flannel_vxlan in CIS  ``--openshift-sdn-name="flannel_vxlan"`` so that it does not
    require any CIS code changes to make Cilium VXLAN/Geneve tunnel  work with BIG-IP VXLAN/Geneve
    tunnel. there are three differences though:
 
@@ -233,19 +233,15 @@ How Cilium knows about the BIG-IP device
 
 At this point, your BIG-IP device knows how to route to the Kubernetes network, but how does Cilium knows about the BIG-IP device. 
 When Cilium VTEP integration feature is enabled, Cilium stores BIG-IP tunnel subnet ``10.1.6.0/24``, BIG-IP vlan ``self-ip``, flannel_vxlan
-``MAC`` address in Cilium ipcache map like below, when Cilium managed pod send traffic to subnet ``10.1.6.0/24``, it knows the VTEP endpoint is BIG-IP vlan self-ip ``10.169.72.34`` and use that as VXLAN encapsulation
+``MAC`` address in Cilium vtep map like below, when Cilium managed pod send traffic to subnet ``10.1.6.0/24``, it knows the VTEP endpoint is BIG-IP vlan self-ip ``10.169.72.34`` and use that as VXLAN encapsulation
 
 .. code-block:: bash 
-   :caption: Cilium ipcache map
+   :caption: Cilium vtep map
+   kubectl exec -it <cilium agent pod> -n kube-system -- cilium bpf vtep list
 
-   ----------------------------
-   IP PREFIX/ADDRESS   IDENTITY
-   ----------------------------
-   10.1.5.0/24         identity=2 encryptkey=0 tunnelendpoint=10.169.72.36 vtepmac=01:50:56:A0:7D:D8
-   10.1.6.0/24         identity=2 encryptkey=0 tunnelendpoint=10.169.72.34 vtepmac=01:50:56:A0:7D:D8
-   10.0.0.130/32       identity=3 encryptkey=0 tunnelendpoint=0.0.0.0 vtepmac=00:00:00:00:00:00
-   0.0.0.0/0           identity=2 encryptkey=0 tunnelendpoint=0.0.0.0 vtepmac=00:00:00:00:00:00
-
+   IP PREFIX/ADDRESS   VTEP
+   10.1.34.0           vtepmac=00:50:56:A0:7D:D8 tunnelendpoint=10.169.72.34    
+   10.1.1.0            vtepmac=82:36:4C:98:2E:56 tunnelendpoint=10.169.72.236   
 
 ******************************************************
 Cilium VXLAN Tunnel Endpoint (VTEP) Integration (beta)
