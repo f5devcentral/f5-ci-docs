@@ -44,6 +44,14 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
 
 .. tabs::
 
+    .. group-tab:: Cilium CLI
+
+       VTEP support can be enabled when install Cilium with cilium cli https://github.com/cilium/cilium-cli/releases/tag/v0.11.7
+       
+       .. code-block:: bash
+
+          cilium install --version=v1.12.0-rc2 --kube-proxy-replacement strict --helm-set-string=k8sServiceHost=10.169.72.9,k8sServicePort=6443,l7Proxy=false,vtep.enabled=true,vtep.endpoint="10.169.72.34 10.169.72.36",vtep.cidr="10.1.6.0/24 10.1.5.0/24",vtep.mac="52:54:00:3e:3f:c1 52:54:00:4e:01:a6",vtep.mask="255.255.255.0"
+          
     .. group-tab:: Helm
 
         If you installed Cilium via ``helm install``, you may enable
@@ -78,14 +86,6 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
        .. code-block:: bash
 
           kubectl -n $CILIUM_NAMESPACE rollout restart ds/cilium
-
-    .. group-tab:: Cilium CLI
-
-       VTEP support can be enabled when install Cilium with Cilium CLI
-
-       .. code-block:: bash
-
-          cilium install --version=v1.12.0-rc2 --kube-proxy-replacement strict --helm-set-string=k8sServiceHost=10.169.72.9,k8sServicePort=6443,l7Proxy=false,vtep.enabled=true,vtep.endpoint="10.169.72.34 10.169.72.36",vtep.cidr="10.1.6.0/24 10.1.5.0/24",vtep.mac="52:54:00:3e:3f:c1 52:54:00:4e:01:a6",vtep.mask="255.255.255.0"
 
     .. group-tab:: cilium vtep map list
 
