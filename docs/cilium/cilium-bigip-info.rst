@@ -279,12 +279,7 @@ endpoint IPs, CIDRs, and MAC addresses.
    identifier (VNI) *must* be configured as VNI ``2``, which represents traffic
    from the VTEP as the world identity. See :ref:`reserved_labels` for more details.
 
-.. warning::
 
-   This feature is in beta, and is currently incompatible with Cilium L7 policy.
-   The instructions below will specify to disable network policy in order to enable
-   the feature for getting started. This restriction will be lifted when the feature
-   graduates from beta. This work is tracked in :gh-issue:`17694`.
 
 
 
