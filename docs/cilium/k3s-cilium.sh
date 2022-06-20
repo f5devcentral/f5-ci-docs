@@ -1,13 +1,13 @@
 #!/bin/bash
 
 echo "Install k3s"
-echo "curl -sfL https://get.k3s.io | INSTALL_K3S_SYMLINK=force INSTALL_K3S_VERSION='v1.24.1+k3s1' INSTALL_K3S_EXEC='--flannel-backend=none --node-ip=10.169.72.9 --node-external-ip=10.3.72.9 --disable=traefik --disable-network-policy --kube-apiserver-arg=kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname' sh -"
+echo "curl -sfL https://get.k3s.io | INSTALL_K3S_SYMLINK=force INSTALL_K3S_VERSION='v1.24.1+k3s1' INSTALL_K3S_EXEC='--flannel-backend=none --node-ip=10.169.72.9 --node-external-ip=10.3.72.9 --disable=traefik --disable-kube-proxy --disable-network-policy --kube-apiserver-arg=kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname' sh -"
 
 echo "only need --kube-apiserver-arg if VM behind company proxy server"
 echo "only need --node-external-ip if VM has internal,external IP"
 echo 
 
-curl -sfL https://get.k3s.io | INSTALL_K3S_SYMLINK=force INSTALL_K3S_VERSION='v1.24.1+k3s1' INSTALL_K3S_EXEC='--flannel-backend=none --node-ip=10.169.72.9 --node-external-ip=10.3.72.9 --disable=traefik --disable-network-policy --kube-apiserver-arg=kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname' sh -
+curl -sfL https://get.k3s.io | INSTALL_K3S_SYMLINK=force INSTALL_K3S_VERSION='v1.24.1+k3s1' INSTALL_K3S_EXEC='--flannel-backend=none --node-ip=10.169.72.9 --node-external-ip=10.3.72.9 --disable=traefik --disable-kube-proxy --disable-network-policy --kube-apiserver-arg=kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname' sh -
 
 echo
 echo "Install cilium, Cilium cli https://github.com/cilium/cilium-cli/releases/tag/v0.11.7 is required"
