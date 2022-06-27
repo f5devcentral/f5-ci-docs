@@ -255,9 +255,9 @@ When Cilium VTEP integration feature is enabled, Cilium stores BIG-IP tunnel sub
    10.1.34.0           vtepmac=00:50:56:A0:7D:D8 tunnelendpoint=10.169.72.34    
    10.1.1.0            vtepmac=82:36:4C:98:2E:56 tunnelendpoint=10.169.72.236   
 
-******************************************************
-Cilium VXLAN Tunnel Endpoint (VTEP) Integration (beta)
-******************************************************
+***********************************************
+Cilium VXLAN Tunnel Endpoint (VTEP) Integration
+***********************************************
 
 .. include:: ../beta.rst
 
