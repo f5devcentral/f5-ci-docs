@@ -17,8 +17,8 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
       VNI 2 is reserved identity ID in Cilium representing world traffic 
    * BIG-IP requires static route setup to Cilium managed pod CIDR network
       BIG-IP tunnel subnet should not be within pod CIDR network, it may cause conflicts if a node podCIDR overlap with 
-      BIG-IP tunnel subnet 
-
+      BIG-IP tunnel subnet
+   
 .. code-block:: bash
 
    #. Create a VXLAN tunnel profile. The tunnel profile name is fl-vxlan, 
@@ -26,9 +26,6 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
 
    #. Create a VXLAN tunnel, the tunnel name is ``flannel_vxlan``, in CIS use ``--openshift-sdn-name`` argument
    tmsh create net tunnels tunnel flannel_vxlan key 2 profile fl-vxlan local-address 10.169.72.34
-
-   #. Create Geneve tunnel if use Geneve, the tunnel name is ``flannel_vxlan``, in CIS use ``--openshift-sdn-name`` argument
-   tmsh create net tunnels tunnel flannel_vxlan key 2 profile geneve remote-address any local-address 10.169.72.34
 
    #. Create VXLAN tunnel self IP, allow default service, allow none stops self ip ping from working
    tmsh create net self 10.1.6.34 address 10.1.6.34/255.255.255.0 allow-service default vlan flannel_vxlan
@@ -39,6 +36,11 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    #. Save sys config
    tmsh save sys config
 
+.. note::
+
+   * BIG-IP Geneve tunnel setup is identical to BIG-IP VXLAN tunnel, example below
+
+.. code-block:: bash
 
    #. Create a Geneve tunnel if use Geneve, the tunnel name is ``flannel_vxlan``, in CIS use ``--openshift-sdn-name`` argument
    tmsh create net tunnels tunnel flannel_vxlan key 2 profile geneve remote-address any local-address 10.169.72.34
@@ -49,6 +51,8 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    #. Create a static route to Cilium managed pod CIDR network ``10.0.0.0/16`` through tunnel interface ``flannel_vxlan``
    tmsh create net route 10.0.0.0 network 10.0.0.0/16 interface flannel_vxlan
 
+   #. Save sys config
+   tmsh save sys config
 
 Enable Cilium VXLAN Tunnel Endpoint (VTEP) integration
 ======================================================
