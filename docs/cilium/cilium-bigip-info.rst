@@ -36,6 +36,17 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    #. Save sys config
    tmsh save sys config
 
+for Geneve Tunnel:
+
+   #. Create a Geneve tunnel, the tunnel name is ``flannel_vxlan``, in CIS use ``--openshift-sdn-name`` argument
+   tmsh create net tunnels tunnel flannel_vxlan key 2 profile geneve remote-address any local-address 10.169.72.34
+
+   #. Create VXLAN tunnel self IP, allow default service, allow none stops self ip ping from working
+   tmsh create net self 10.1.6.34 address 10.1.6.34/255.255.255.0 allow-service default vlan flannel_vxlan
+   
+   #. Create a static route to Cilium managed pod CIDR network ``10.0.0.0/16`` through tunnel interface ``flannel_vxlan``
+   tmsh create net route 10.0.0.0 network 10.0.0.0/16 interface flannel_vxlan
+
 
 Enable Cilium VXLAN Tunnel Endpoint (VTEP) integration
 ======================================================
