@@ -16,7 +16,7 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    * the tunnel VNI key is set to ``2``
       VNI 2 is reserved identity ID in Cilium representing world traffic 
    * BIG-IP requires static route setup to Cilium managed pod CIDR network
-      BIG-IP tunnel subnet should not be within pod CIDR network, it may cause conflicts if a node podCIDR overlap with 
+      BIG-IP tunnel subnet should be OUTSIDE OF POD CIDR network, it may cause conflicts if a node podCIDR overlap with 
       BIG-IP tunnel subnet
    
 .. code-block:: bash
