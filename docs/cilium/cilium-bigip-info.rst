@@ -6,7 +6,8 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
 
 .. note::
 
-   Cilium VTEP implementation detail PR at `VTEP`_.
+   Cilium VTEP implementation detail PR at `VTEP`_
+   
    .. _VTEP: https://github.com/cilium/cilium/pull/17370
 
    BIG-IP VXLAN tunnel setup is identical to BIG-IP flannel VXLAN deployment, we even use the 
