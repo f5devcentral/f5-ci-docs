@@ -304,7 +304,7 @@ endpoint IPs, CIDRs, and MAC addresses.
    identifier (VNI) *must* be configured as VNI ``2``, which represents traffic
    from the VTEP as the world identity. See :ref:`reserved_labels` for more details.
 
+For Cilium VTEP implementation detail reference PR at `VTEP`_.
 
-
-
+.. _VTEP: https://github.com/cilium/cilium/pull/17370
 
