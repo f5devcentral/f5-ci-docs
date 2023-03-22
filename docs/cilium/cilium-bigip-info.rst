@@ -6,6 +6,9 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
 
 .. note::
 
+   Cilium VTEP implementation detail PR at `VTEP`_.
+   .. _VTEP: https://github.com/cilium/cilium/pull/17370
+
    BIG-IP VXLAN tunnel setup is identical to BIG-IP flannel VXLAN deployment, we even use the 
    same tunnel name flannel_vxlan in CIS  ``--openshift-sdn-name="flannel_vxlan"`` so that it does not
    require any CIS code changes to make Cilium VXLAN/Geneve tunnel  work with BIG-IP VXLAN/Geneve
@@ -304,7 +307,4 @@ endpoint IPs, CIDRs, and MAC addresses.
    identifier (VNI) *must* be configured as VNI ``2``, which represents traffic
    from the VTEP as the world identity. See :ref:`reserved_labels` for more details.
 
-For Cilium VTEP implementation detail reference PR at `VTEP`_.
-
-.. _VTEP: https://github.com/cilium/cilium/pull/17370
 
