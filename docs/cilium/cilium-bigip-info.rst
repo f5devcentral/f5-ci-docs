@@ -49,6 +49,7 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    tmsh create net self 10.1.6.34 address 10.1.6.34/255.255.255.0 allow-service default vlan flannel_vxlan
    
    #. Create a static route to Cilium managed pod CIDR network ``10.0.0.0/16`` through tunnel interface ``flannel_vxlan``
+   #. DO NOT CREATE STATIC ROUTE THROUGH TUNNEL INTERFACE TO K8S NODE NETWORK/IP
    tmsh create net route 10.0.0.0 network 10.0.0.0/16 interface flannel_vxlan
 
    #. Save sys config
