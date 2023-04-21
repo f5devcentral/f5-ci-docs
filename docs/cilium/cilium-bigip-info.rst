@@ -22,7 +22,10 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    * BIG-IP requires static route setup to Cilium managed pod CIDR network
       BIG-IP tunnel subnet ``any random private subnet starting with 192.x or 10.x that is MANUALLY configured`` should be ``OUTSIDE OF K8S POD CIDR           AUTOMATICALLY ASSIGNED BY K8S`` network, it may cause conflicts if a node podCIDR overlap with BIG-IP tunnel subnet.
       ``DO NOT CREATE DUMMY NODE FOR BIGIP IN K8S CLUSTER``
+   
    * BIG-IP HA pair, each BIG-IP ``SHOULD HAVE DIFFERENT`` tunnel subnet or ``vtep.cidr``
+   
+   * CIS pod must be able to create fake node FDB entry starting with `0a:0a:0x:0x:0x:0x` where 0x is hex of k8s node ip octet, on BIG-IP, run `tmsh show net fdb`, if the k8s node FDB is missing, the tunnel WILL NOT WORK
    
 .. code-block:: bash
 
@@ -46,8 +49,7 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    #. Save sys config
    tmsh save sys config
    
-   #. CIS pod must be able to create fake node FDB entry starting with `"0a:0a:x:x:x:x"` where x hex of k8s node ip octet
-   #. on BIG-IP, run `tmsh show net fdb`, if the k8s node FDB is missing, the tunnel WILL NOT WORK
+
 
 .. note::
 
