@@ -25,7 +25,7 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
    
    * BIG-IP HA pair, each BIG-IP ``SHOULD HAVE DIFFERENT`` tunnel subnet or ``vtep.cidr``
    
-   * CIS pod must be able to create fake node FDB entry starting with `0a:0a:0x:0x:0x:0x` where 0x is hex of k8s node ip octet, on BIG-IP, run `tmsh show net fdb`, if the k8s node FDB is missing, the tunnel WILL NOT WORK
+   * CIS pod must be able to create fake node FDB entry starting with ``0a:0a:0x:0x:0x:0x`` where ``0x`` is hex of k8s node ip octet, on BIG-IP, run ``tmsh show net fdb``, if the k8s node FDB is missing, the tunnel ``WILL NOT WORK``
    
 .. code-block:: bash
 
