@@ -45,6 +45,9 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
 
    #. Save sys config
    tmsh save sys config
+   
+   #. CIS pod must be able to create fake node FDB entry starting with `"0a:0a:x:x:x:x"` where x hex of k8s node ip octet
+   #. on BIG-IP, run `tmsh show net fdb`, if the k8s node FDB is missing, the tunnel WILL NOT WORK
 
 .. note::
 
