@@ -6,9 +6,10 @@ BIG-IP Tunnel Setup for Cilium VTEP Integration
 
 .. note::
 
-   Cilium VTEP implementation detail PR at `VTEP`_
-   
+   Cilium VTEP implementation detail PR at `VTEP`
    .. _VTEP: https://github.com/cilium/cilium/pull/17370
+   
+   A diagnosis CIS image from docker hub to help trouble shooting: ``image: vli39/k8s-bigip-ctlr:diag``
 
    BIG-IP VXLAN tunnel setup is identical to BIG-IP flannel VXLAN deployment, we even use the 
    same tunnel name flannel_vxlan in CIS  ``--openshift-sdn-name="flannel_vxlan"`` so that it does not
