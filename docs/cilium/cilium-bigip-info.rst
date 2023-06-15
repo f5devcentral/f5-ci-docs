@@ -129,7 +129,7 @@ This feature requires a Linux ``5.4`` kernel (RHEL8/Centos8 with 4.18.x supporte
 
        .. code-block:: bash
           
-          kubectl -n kube-system -it <cilium agent pod> -- cilium bpf vtep list
+          kubectl -n kube-system exec -it <cilium agent pod> -- cilium bpf vtep list
           
           IP PREFIX/ADDRESS   VTEP
           10.1.6.0            vtepmac=00:50:56:A0:7D:D8 tunnelendpoint=10.169.72.34    
